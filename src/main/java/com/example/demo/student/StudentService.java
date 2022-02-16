@@ -16,10 +16,6 @@ import java.util.Optional;
 @Service
 public class StudentService extends CustomResponseEntityExceptionHandler {
 
-    /* private final List<Student> students = new ArrayList<Student>(Arrays.asList(
-            new Student(1L,"Prateek",21,LocalDate.of(1999,Month.SEPTEMBER,20),"prateek@gmail.com"),
-            new Student(2L,"Rahul",21,LocalDate.of(1997,Month.JANUARY,10),"rahul@gmail.com")
-    ));*/
     @Autowired
     private StudentRepository studentRepository;
 

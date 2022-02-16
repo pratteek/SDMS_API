@@ -1,13 +1,13 @@
-package com.example.demo.student;
+package com.example.demo.controller;
 
-import com.example.demo.repository.StudentRepository;
-import org.apache.coyote.Response;
+import com.example.demo.kafka.Producer;
+import com.example.demo.student.Student;
+import com.example.demo.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/student")
@@ -16,9 +16,14 @@ public class StudentController {
     @Autowired
     private final StudentService studentService;
 
-    public StudentController(StudentService studentService) {
+    @Autowired
+    private final Producer producer;
+
+    public StudentController(StudentService studentService, Producer producer) {
         this.studentService = studentService;
+        this.producer = producer;
     }
+
 
     @GetMapping("/")
     public ResponseEntity<?> getStudents(){
@@ -43,6 +48,8 @@ public class StudentController {
 
     @PostMapping("/")
     public ResponseEntity<?> addStudent(@Valid @RequestBody Student student){
+        this.producer.sendMessage(student.getEmail());
+        this.producer.sendMessage(student.getName());
        return studentService.addStudent(student);
     }
 
