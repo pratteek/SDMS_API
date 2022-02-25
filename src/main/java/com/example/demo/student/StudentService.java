@@ -16,49 +16,46 @@ import java.util.Optional;
 @Service
 public class StudentService extends CustomResponseEntityExceptionHandler {
 
+
     @Autowired
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public ResponseEntity<?> getStudents(){
         return ResponseEntity.ok(this.studentRepository.findAll());
     }
 
-    public ResponseEntity<?> getStudentById(Long id){
-        Optional<?> result = this.studentRepository.findById(id);
-        if(result.isEmpty())
-            throw new StudentNotFoundException("id: "+id);
-
-        return ResponseEntity.ok(result);
+    public Optional<?> getStudentById(Long id){
+        return this.studentRepository.findById(id);
 
     }
 
-    public ResponseEntity<?> getStudentByName(String name){
-        Optional<?> result = Optional.ofNullable(this.studentRepository.findByName(name));
-        if(result.isEmpty())
-            throw new StudentNotFoundException("id: "+name);
-
-        return ResponseEntity.ok(result);
+    public Student getStudentByName(String name){
+        return this.studentRepository.findByName(name);
+        //if(result.isEmpty())
+            //throw new StudentNotFoundException("id: "+name);
     }
 
-    public ResponseEntity<?> getStudentByEmail(String email){
-        Optional<?> result = Optional.ofNullable(this.studentRepository.findByEmail(email));
-        if(result.isEmpty())
-            throw new StudentNotFoundException("id: "+email);
-
-        return ResponseEntity.ok(result);
+    public Student getStudentByEmail(String email){
+      return this.studentRepository.findByEmail(email);
+        //if(result.isEmpty())
+            //throw new StudentNotFoundException("id: "+email);
     }
 
-    public ResponseEntity<?> addStudent(Student student){
-        Student save = this.studentRepository.save(student);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(save.getId()).toUri();
-        return ResponseEntity.created(location).build();
+    public Student addStudent(Student student){
+        return this.studentRepository.save(student);
     }
 
-    public void deleteStudent(Long id){
+    public String deleteStudent(Long id){
         this.studentRepository.deleteById(id);
+        return "Removed";
     }
-    public void deleteStudentByName(String name){
+    public String deleteStudentByName(String name){
         this.studentRepository.deleteByName(name);
+        return "Removed";
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.kafka.Producer;
 import com.example.demo.student.Student;
 import com.example.demo.student.StudentService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,17 +28,17 @@ public class StudentController {
 
     @GetMapping("/")
     public ResponseEntity<?> getStudents(){
-        return studentService.getStudents();
+        return ResponseEntity.ok(studentService.getStudents());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getStudentById(@PathVariable Long id){
-        return studentService.getStudentById(id);
+        return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<?> getStudentByName(@PathVariable String name){
-        return studentService.getStudentByName(name);
+        return ResponseEntity.ok(studentService.getStudentByName(name));
     }
 
     @GetMapping("/email/{email}")
@@ -47,7 +48,7 @@ public class StudentController {
 
 
     @PostMapping("/")
-    public ResponseEntity<?> addStudent(@Valid @RequestBody Student student){
+    public Student addStudent(@Valid @RequestBody Student student){
         this.producer.sendMessage(student.getEmail());
         this.producer.sendMessage(student.getName());
        return studentService.addStudent(student);
@@ -56,12 +57,13 @@ public class StudentController {
 
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable Long id){
-        studentService.deleteStudent(id);
+         studentService.deleteStudent(id);
+
     }
 
     @DeleteMapping("/name/{name}")
     public void deleteStudentByName(@PathVariable String name){
-        studentService.deleteStudentByName(name);
+         studentService.deleteStudentByName(name);
     }
 
 }
